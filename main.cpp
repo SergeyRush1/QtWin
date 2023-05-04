@@ -4,6 +4,58 @@
 #include <iostream>
 
 using namespace std ;
+void ShowCOMPorts()
+{
+    int r = 0;
+    HKEY hkey = NULL;
+    //Открываем раздел реестра, в котором хранится иинформация о COM портах
+    r = RegOpenKeyEx(HKEY_LOCAL_MACHINE, TEXT("HARDWARE\\DEVICEMAP\\SERIALCOMM\\"), 0, KEY_READ, &hkey);
+    if (r != ERROR_SUCCESS)
+        return;
+
+    unsigned long CountValues = 0, MaxValueNameLen = 0, MaxValueLen = 0;
+    //Получаем информацию об открытом разделе реестра
+    RegQueryInfoKey(hkey, NULL, NULL, NULL, NULL, NULL, NULL, &CountValues, &MaxValueNameLen, &MaxValueLen, NULL, NULL);
+    ++MaxValueNameLen;
+    //Выделяем память
+    TCHAR* bufferName = NULL, * bufferData = NULL;
+    bufferName = (TCHAR*)malloc(MaxValueNameLen * sizeof(TCHAR));
+    if (!bufferName)
+    {
+        RegCloseKey(hkey);
+        return;
+    }
+    bufferData = (TCHAR*)malloc((MaxValueLen + 1) * sizeof(TCHAR));
+    if (!bufferData)
+    {
+        free(bufferName);
+        RegCloseKey(hkey);
+        return;
+    }
+
+    unsigned long NameLen, type, DataLen;
+    //Цикл перебора параметров раздела реестра
+    for (unsigned int i = 0; i < CountValues; i++)
+    {
+        NameLen = MaxValueNameLen;
+        DataLen = MaxValueLen;
+        r = RegEnumValue(hkey, i, bufferName, &NameLen, NULL, &type, (LPBYTE)bufferData, &DataLen);
+        if ((r != ERROR_SUCCESS) || (type != REG_SZ))
+            continue;
+
+       // tprintf(TEXT("%s\n"), bufferData);
+        printf("dddd");
+    }
+    //Освобождаем память
+    free(bufferName);
+    free(bufferData);
+    //Закрываем раздел реестра
+    RegCloseKey(hkey);
+}
+
+
+
+
 bool SetComPort(LPCTSTR sPortName) {
      HANDLE hSerial;
      hSerial = ::CreateFile(sPortName, GENERIC_READ | GENERIC_WRITE, 0, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
@@ -44,6 +96,7 @@ bool SetComPort(LPCTSTR sPortName) {
 int main(int argc, char *argv[])
 {
     LPCTSTR sPortName = L"COM3";
+    ShowCOMPorts();
    
    bool status =  SetComPort(sPortName);
    
