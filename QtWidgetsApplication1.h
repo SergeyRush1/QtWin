@@ -1,7 +1,11 @@
 #pragma once
-
+#ifndef MAINWINDOW_H
+#define MAINWINDOW_H
+#endif
 #include <QtWidgets/QMainWindow>
 #include "ui_QtWidgetsApplication1.h"
+
+
 
 class QtWidgetsApplication1 : public QMainWindow
 {
@@ -13,4 +17,10 @@ public:
 
 private:
     Ui::QtWidgetsApplication1Class ui;
+
+
+
+   // public slots:
+     //   void openDialogClicked();
+
 };

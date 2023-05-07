@@ -1,9 +1,11 @@
 #include "QtWidgetsApplication1.h"
 #include <QtWidgets/QApplication>
 #include <windows.h>
+#include "MainWindow.h"
 #include <iostream>
 
 using namespace std ;
+//фунция получения имен доступныз портов+
 void ShowCOMPorts()
 {
     int r = 0;
@@ -44,7 +46,8 @@ void ShowCOMPorts()
             continue;
 
        // tprintf(TEXT("%s\n"), bufferData);
-        printf("dddd");
+   
+       // printf(bufferData);
     }
     //Освобождаем память
     free(bufferName);
@@ -53,9 +56,7 @@ void ShowCOMPorts()
     RegCloseKey(hkey);
 }
 
-
-
-
+// фкункция отправки сообщений через порт 
 bool SetComPort(LPCTSTR sPortName) {
      HANDLE hSerial;
      hSerial = ::CreateFile(sPortName, GENERIC_READ | GENERIC_WRITE, 0, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
@@ -93,20 +94,30 @@ bool SetComPort(LPCTSTR sPortName) {
      return true;
 
 }
+
 int main(int argc, char *argv[])
 {
     LPCTSTR sPortName = L"COM3";
-    ShowCOMPorts();
+    //ShowCOMPorts();
    
-   bool status =  SetComPort(sPortName);
+  // bool status =  SetComPort(sPortName);
    
 
     QApplication a(argc, argv);
     QtWidgetsApplication1 w;
+    MainWindow z;
+ 
+    z.show();
     w.show();
+   
+   
+   
+
     return a.exec();
+   
  
 }
+
 
  
 
